@@ -1,3 +1,49 @@
+const root = document.getElementById("root");
+const containerGen = document.createElement("div");
+const displayTurn = document.createElement("h2");
+displayTurn.classList.add("winner");
+displayTurn.id = "turn";
+const displayX = document.createElement("h2");
+displayX.classList.add("winner");
+displayX.id = "win-X";
+const displayY = document.createElement("h2");
+displayY.classList.add("winner");
+displayY.id = "win-Y";
+const displayT = document.createElement("h2");
+displayT.classList.add("winner");
+displayT.id = "tie";
+containerGen.classList.add("container");
+containerGen.id = "container";
+
+displayTurn.textContent = "Turn: X";
+displayX.textContent = "X wins the game!";
+displayY.textContent = "Y wins the game!";
+displayT.textContent = "It's a tie!";
+
+const rst = document.createElement("button");
+rst.id = "reset-btn";
+rst.textContent = "Reset";
+
+root.appendChild(displayTurn);
+root.appendChild(displayX);
+root.appendChild(displayY);
+root.appendChild(displayT);
+root.appendChild(containerGen);
+root.appendChild(rst);
+
+const generate = () => {
+    for (let i = 0; i < 9; i++) {
+        const sqr = document.createElement("div");
+        sqr.className = "spots";
+        sqr.id = `n${i + 1}`;
+        containerGen.appendChild(sqr);
+    }
+}
+
+
+generate()
+
+
 const container = document.getElementById("container");
 const winnerX = document.getElementById("win-X");
 const winnerY = document.getElementById("win-Y");
@@ -17,6 +63,43 @@ const n9 = document.getElementById("n9");
 const resetBtn = document.getElementById("reset-btn");
 const allSpots = [n1, n2, n3, n4, n5, n6, n7, n8, n9];
 let turn = 0;
+
+
+
+ // BOT 
+    
+    
+ const bot = () => {
+
+    let random = Math.floor(Math.random() * 9) + 1;
+    let picked = `n${random}`;
+    
+  
+    let pickedElement = document.getElementById(picked);
+    if (pickedElement.children.length === 0){
+        pickedElement.innerHTML = `<div class="y sign"></div>`;
+        turn = 0;
+        turnText.textContent = "Turn: X";
+        enableClicks();
+        if (!winCheck()) {
+            order(); 
+        }
+    } else {
+        bot();
+    }
+   
+    
+};
+
+
+const order = () => {
+    if (turn === 1) {
+        disableClicks();
+        setTimeout(bot, 1000);
+    }
+};
+
+
 
 // for the Endgame
 
@@ -93,27 +176,39 @@ const enableClicks = () => {
 const action = (event) => {
     
     const clickedCell = event.currentTarget;
+
+    if (winCheck()) {
+        return;  
+     }
+
     if (clickedCell.children.length === 0) {
         turnText.textContent = "";
         if (turn === 0) {
             clickedCell.innerHTML = `<div class="x sign"></div>`
             turn = 1;
             turnText.textContent = "Turn: O"
+            disableClicks();
+            
+            
 
         } else {
             clickedCell.innerHTML = `<div class="y sign"></div>`
             turn = 0;
             turnText.textContent = "Turn: X"
+            
+           
         }
-            winCheck();
+        
+        if (!winCheck()) {
+            order();  
+        }
      }
     }
 
-
+    
     spots.forEach(spot => {
         spot.addEventListener('click', action);
     });
-
 
 
 // Reset button function
@@ -132,3 +227,4 @@ const reset = () => {
 }
 
 resetBtn.addEventListener("click", reset)
+

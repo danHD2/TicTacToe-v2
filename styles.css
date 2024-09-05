@@ -45,7 +45,7 @@
     isolation: isolate;
   }
 
-  body {
+  #root {
     background-color: #E7DECD;
     display: flex;
     height: 100vh;
